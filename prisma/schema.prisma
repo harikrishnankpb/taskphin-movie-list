@@ -27,7 +27,7 @@ model User {
 model Movie {
   id          String    @id @default(uuid())
   name        String
-  raiting     Int?
+  rating      Int?
   cast        String[]
   genre       String?
   releaseDate DateTime?
