@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken"
 
 export default async function auth(token: string, min: Number): Promise<any> {
-    if (min == 0 && !token) return { _id: null, role: 0 }
+    if (min == 0 && !token) return { id: null, role: 0 }
     if (!token) throw new Error('Please login in-order to access')
     let data: any
     let secret = (process.env.JWT_SECRET || '')

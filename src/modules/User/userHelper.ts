@@ -62,7 +62,7 @@ export const createUser = async (user: User): Promise<Status> => { //Fields are 
                 name: user.name,
                 email: user.email,
                 password: password,
-                role: 0,
+                role: 1,
             }
         });
         if (userData) return {
