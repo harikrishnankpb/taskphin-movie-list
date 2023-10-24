@@ -17,6 +17,9 @@ export const createMovie = async (movie: MovieType, token: any): Promise<Status>
             }
         };
         let userId = userData.id;
+        if (movie.rating) movie.rating = parseInt(movie.rating)
+        if (movie.cast) movie.cast = JSON.parse(movie.cast)
+        if (movie.releaseDate) movie.releaseDate = dayjs(movie.releaseDate).toISOString()
         let movieData = await prisma.movie.create({
             data: {
                 name: movie.name,
@@ -99,7 +102,7 @@ export const listMovies = async (input: any, token: any): Promise<StatusData> =>
         }
 
         let userId = userData.id;
-        let searchText = userData.searchText
+        let searchText = input.searchText || ''
 
         const orderBy = input.orderBy || 'createdAt';
         const validOrderByFields = ['rating', 'releaseDate', 'createdAt'];
@@ -109,7 +112,7 @@ export const listMovies = async (input: any, token: any): Promise<StatusData> =>
 
         const movieData = await prisma.movie.findMany({
             where: {
-                user: userId,
+                userId: userId,
                 name: {
                     contains: searchText,
                     mode: 'insensitive',
