@@ -116,7 +116,8 @@ export const listMovies = async (input: any, token: any): Promise<StatusData> =>
                 name: {
                     contains: searchText,
                     mode: 'insensitive',
-                }
+                },
+                id: input.id
             },
             orderBy: {
                 [orderBy]: 'desc',
