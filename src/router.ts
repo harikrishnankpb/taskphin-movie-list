@@ -1,9 +1,11 @@
 import express, { Router, Request, Response } from 'express';
 import userRouter from './modules/User/userController';
+import movieRouter from './modules/Movie/movieController';
 const router: Router = express.Router();
 
 
 router.use('/users', userRouter);
+router.use('/movies', movieRouter);
 
 
 router.get('/', async (req: Request, res: Response) => {

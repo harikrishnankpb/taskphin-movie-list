@@ -1,17 +1,25 @@
 import jwt from "jsonwebtoken"
 
-export default async function auth(token: string, min: Number): Promise<any> {
-    if (min == 0 && !token) return { id: null, role: 0 }
-    if (!token) throw new Error('Please login in-order to access')
-    let data: any
-    let secret = (process.env.JWT_SECRET || '')
+interface UserData {
+    id: string | null;
+    role: number;
+    email: string;
+}
 
-    try {
-        data = jwt.verify(token, secret)
-    } catch (e) {
-        throw new Error('Invalid token')
+export default async function auth(token: string, minRole: number): Promise<UserData> {
+    const newToken = token.startsWith('accessToken=') ? token.substring('accessToken='.length) : token;
+    if (minRole == 0) return {
+        id: null,
+        role: 0,
+        email: ''
     }
-
-    if (data.role < min) throw new Error('You are not authorized to access this session')
-    return data
+    let secret = process.env.JWT_SECRET || '';
+    let data: any;
+    try {
+        data = jwt.verify(newToken, secret);
+    } catch (error) {
+        throw new Error('Invalid Token')
+    }
+    if (data.role < minRole) throw new Error("You are not authorized to access this session");
+    return data;
 }

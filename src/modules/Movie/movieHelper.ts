@@ -1,6 +1,7 @@
 import { prisma } from '../../index'
 import { MovieType, Status, StatusData } from '../../utils/commonInterfaces';
 import auth from '../../utils/auth'
+import dayjs from 'dayjs';
 
 export const createMovie = async (movie: MovieType, token: any): Promise<Status> => {
     try {
@@ -34,9 +35,9 @@ export const createMovie = async (movie: MovieType, token: any): Promise<Status>
             status: false,
             msg: "Something went wrong"
         }
-    } catch (err) {
+    } catch (err: any) {
         return {
-            msg: 'Something went went wrong',
+            msg: err.message,
             status: false
         }
     }
@@ -49,17 +50,21 @@ export const updateMovie = async (movie: MovieType, token: any): Promise<Status>
             status: false,
             msg: 'User not founds'
         }
-        if (!movie || !movie.name || !movie.id) {
+        if (!movie || !movie.id) {
             return {
                 msg: 'Invalid Input',
                 status: false
             }
         };
+        if (movie.rating) movie.rating = parseInt(movie.rating)
+        if (movie.cast) movie.cast = JSON.parse(movie.cast)
+        if (movie.releaseDate) movie.releaseDate = dayjs(movie.releaseDate).toISOString()
         let data = {
             name: movie.name ? movie.name : undefined,
             rating: movie.rating ? movie.rating : undefined,
             genre: movie.genre ? movie.genre : undefined,
             cast: movie.cast ? movie.cast : undefined,
+            releaseDate: movie.releaseDate ? movie.releaseDate : undefined
         };
         let movieData = await prisma.movie.update({
             where: {
@@ -75,9 +80,10 @@ export const updateMovie = async (movie: MovieType, token: any): Promise<Status>
             status: false,
             msg: "Movie not found"
         }
-    } catch (err) {
+    } catch (err: any) {
+        console.log(err.message)
         return {
-            msg: 'Something went went wrong',
+            msg: err.message,
             status: false
         }
     }
@@ -118,9 +124,9 @@ export const listMovies = async (input: any, token: any): Promise<StatusData> =>
             data: movieData,
             msg: 'Success'
         }
-    } catch (err) {
+    } catch (err: any) {
         return {
-            msg: 'Something went went wrong',
+            msg: err.message,
             status: false
         }
     }
@@ -141,7 +147,7 @@ export const deleteMovie = async (input: any, token: any): Promise<Status> => {
         const movieData = await prisma.movie.delete({
             where: {
                 id: movieId,
-                user: userId,
+                userId: userId,
             }
         });
         if (movieData) return {
@@ -152,9 +158,9 @@ export const deleteMovie = async (input: any, token: any): Promise<Status> => {
             status: false,
             msg: 'Movie not found'
         }
-    } catch (err) {
+    } catch (err: any) {
         return {
-            msg: 'Something went went wrong',
+            msg: err.message,
             status: false
         }
     }

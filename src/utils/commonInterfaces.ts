@@ -22,7 +22,7 @@ export interface MovieType {
     rating: number;
     cast: string[];
     genre: string;
-    releaseDate: string;
+    releaseDate: Date;
     createdAt: string;
     updatedAt: string;
     user: UserType;
