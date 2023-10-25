@@ -60,13 +60,20 @@ export const updateMovie = async (movie: MovieType, token: any): Promise<Status>
             }
         };
         if (movie.rating) movie.rating = parseInt(movie.rating)
-        if (movie.cast) movie.cast = JSON.parse(movie.cast)
+        let cast: any = []
+        let isArray = Array.isArray(movie.cast);
+        if (isArray) {
+            cast = movie.cast;
+        }
+        else {
+            cast = movie.cast.split(',')
+        }
         if (movie.releaseDate) movie.releaseDate = dayjs(movie.releaseDate).toISOString()
         let data = {
             name: movie.name ? movie.name : undefined,
             rating: movie.rating ? movie.rating : undefined,
             genre: movie.genre ? movie.genre : undefined,
-            cast: movie.cast ? movie.cast : undefined,
+            cast: cast ? cast : undefined,
             releaseDate: movie.releaseDate ? movie.releaseDate : undefined
         };
         let movieData = await prisma.movie.update({
