@@ -2,6 +2,7 @@ import validator from 'validator';
 import { prisma } from '../../index'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
+import auth from '../../utils/auth';
 
 interface User {
     id: string;
@@ -72,6 +73,43 @@ export const createUser = async (user: User): Promise<Status> => { //Fields are 
         return {
             status: false,
             msg: "Something went wrong"
+        }
+    } catch (err) {
+        return {
+            msg: 'Something went w',
+            status: false
+        }
+    }
+};
+
+export const updateUser = async (data: any, token: any): Promise<Status> => { //Fields are =>name,email,phone,password,role
+    try {
+        let userData = await auth(token, 1);
+        if (!userData.id) return {
+            status: false,
+            msg: 'User not founds'
+        }
+        if (!data.id || data.name) {
+            return {
+                msg: 'Invalid Input',
+                status: false
+            }
+        };
+        let updatedUser = await prisma.user.update({
+            where: {
+                id: data.id
+            },
+            data: {
+                name: data.name
+            }
+        })
+        if (updatedUser) return {
+            status: true,
+            msg: 'Movie entry updated'
+        }
+        return {
+            status: false,
+            msg: "Movie not found"
         }
     } catch (err) {
         return {

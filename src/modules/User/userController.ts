@@ -1,13 +1,19 @@
 import express, { Request, Response } from 'express';
-import { createUser, signIn } from './userHelper';
+import { createUser, signIn, updateUser } from './userHelper';
 const router = express.Router();
 
-router.post('/createUser', async (req: Request, res: Response) => { //?Fields are =>name,email,password,role
+router.post('/createUser', async (req: Request, res: Response) => {
     if (!req.body) throw new Error('Empty body')
     const userResponse = await createUser(req.body);
     res.json(userResponse);
 });
-router.post('/signIn', async (req: Request, res: Response) => { //? Fields are =>emailOrPhone && password
+router.post('/updateUser', async (req: Request, res: Response) => {
+    if (!req.body) throw new Error('Empty body');
+    let token = req.headers.token || req.headers.cookie;
+    const userResponse = await updateUser(req.body, token);
+    res.json(userResponse);
+});
+router.post('/signIn', async (req: Request, res: Response) => {
     try {
         if (!req.body) throw new Error('Empty body');
         const sigInOutput = await signIn(req.body);
