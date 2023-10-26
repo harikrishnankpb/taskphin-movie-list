@@ -129,6 +129,16 @@ export const listMovies = async (input: any, token: any): Promise<StatusData> =>
             orderBy: {
                 [orderBy]: 'desc',
             },
+            select: {
+                id: true,
+                name: true,
+                rating: true,
+                cast: true,
+                genre: true,
+                releaseDate: true,
+                updatedAt: true,
+                createdAt: true
+            },
         });
         return {
             status: true,
